@@ -1,0 +1,100 @@
+---
+title: "Day 1: Secret Entrance"
+author: AndiF
+date: 1 Dec 2025
+output: 
+  html_notebook: 
+    code_folding: none
+---
+
+```{r message=FALSE, warning=FALSE}
+library(tidyverse)
+library(tictoc)
+```
+
+
+```{r}
+dat <- read.table("aoc01.txt", header = FALSE) |>
+  rename(str = V1)
+dat
+```
+
+```{r}
+parse_rot <- function(str) {
+  mat <- str_extract_all(str, "[A-Z]|\\d+", simplify = TRUE)
+  mat |>
+    as.data.frame() |>
+    rename(dir = V1) |>
+    mutate(val = as.numeric(V2)) |>
+    select(-V2)
+}
+```
+
+
+```{r}
+dat <- dat |>
+  mutate(parse_rot(str),
+         dirval = if_else(dir == "R", val, -val),
+         curpos = NA)
+dat
+```
+
+
+
+
+## Part 1
+
+
+```{r}
+pos <- 50
+
+for (r in 1:nrow(dat)) {
+  pos <- (pos + dat$dirval[r]) %% 100
+  dat$curpos[r] <- pos
+}
+
+dat |>
+  filter(curpos == 0) |>
+  nrow()
+```
+
+
+## Part 2
+
+
+```{r}
+expand_vals <- function(dir, val) {
+  data.frame(dir = rep(dir, val), val = rep(1, val)) |>
+    mutate(dirval = if_else(dir == "R", val, -val))
+}
+```
+
+
+```{r}
+tic()
+long_dat <- map2(dat$dir, dat$val, expand_vals) |>
+  bind_rows()
+toc()
+```
+
+```{r}
+long_dat
+```
+
+
+
+```{r}
+pos <- 50
+zeros <- 0
+
+tic()
+for (r in 1:nrow(long_dat)) {
+  pos <- (pos + long_dat$dirval[r]) %% 100
+  if (pos == 0)
+    zeros <- zeros + 1
+}
+
+sum(zeros)
+toc()
+```
+
