@@ -94,7 +94,7 @@ for (r in 1:nrow(long_dat)) {
     zeros <- zeros + 1
 }
 
-sum(zeros)
+zeros
 toc()
 ```
 
