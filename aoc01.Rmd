@@ -72,7 +72,7 @@ expand_vals <- function(dir, val) {
 
 ```{r}
 tic()
-long_dat <- map2(dat$dir, dat$val, expand_vals) |>
+long_dat <- map2(dat$dir, dat$val, expand_vals, .progress = TRUE) |>
   bind_rows()
 toc()
 ```
