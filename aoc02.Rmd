@@ -19,9 +19,20 @@ Read in the data, avoiding regexes this time:
 mat <- read.table("aoc02.txt", header = FALSE, sep = ",") |> t()
 dat <- str_split_fixed(mat[,1], "-", 2) |> as.data.frame() |>
   mutate(across(everything(), as.numeric)) |>
-  rename(x = V1, y = V2)
+  rename(x = V1, y = V2) |>
+  mutate(width = y - x + 1)
 dat
 ```
+
+
+```{r}
+summary(dat$width)
+```
+
+```{r}
+sum(dat$width)
+```
+
 
 
 Helper:
@@ -100,11 +111,83 @@ dat <- dat |>
 toc()
 ```
 
+That's a bit slow.
+
+
 ```{r}
 dat$dodgy_sum |> sum()
 ```
 
+But does work.
+
 
 ## Part 2
 
-Off-the-'elf algorithm or roll my own...? TBC later when I have time again.
+```{r}
+find_rep_substr_n <- function(xs, n) {
+  found <- FALSE
+  
+  if (length(xs) %% n == 0) {
+    search_xs <- xs[1:n]
+    repped_search <- rep(search_xs, length(xs) / n)
+    if (all(xs == repped_search))
+      found <- TRUE
+  }
+
+  found
+}
+
+find_rep_substr_n(c(1,2,3,4,1,2,3,4), 2)
+```
+
+```{r}
+any_dodgy_rep <- function(digs) {
+  xs <- digs2charvec(digs)
+  max_n <- floor(length(xs) / 2)
+  n <- 1
+  found <- FALSE
+  
+  while (n <= max_n && !found) {
+    found <- find_rep_substr_n(xs, n)
+    n <- n + 1
+  }
+  found
+}
+
+any_dodgy_rep(11)
+any_dodgy_rep(123123)
+any_dodgy_rep(12412)
+any_dodgy_rep(41212)
+```
+
+
+```{r}
+find_dodgy_reps <- function(x, y) {
+  digs_vec <- x:y
+  dodgy <- map_lgl(digs_vec, any_dodgy_rep) 
+  digs_vec[dodgy]
+}
+```
+
+
+```{r}
+sum_dodgy_reps <- function(x, y) {
+  find_dodgy_reps(x, y) |> sum()
+}
+```
+
+
+```{r}
+tic()
+dat <- dat |>
+  mutate(dodgy_rep_sum = map2_dbl(x, y, sum_dodgy_reps))
+toc()
+```
+
+
+```{r}
+sum(dat$dodgy_rep_sum)
+```
+
+
+
