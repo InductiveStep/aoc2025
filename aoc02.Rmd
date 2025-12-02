@@ -1,5 +1,5 @@
 ---
-title: "Day 1: Secret Entrance"
+title: "Day 2: Gift Shop"
 author: AndiF
 date: 2 Dec 2025
 output: 
