@@ -107,4 +107,4 @@ dat$dodgy_sum |> sum()
 
 ## Part 2
 
-Off-the-'elf algorithm or roll own...? TBC later when I have time again.
+Off-the-'elf algorithm or roll my own...? TBC later when I have time again.
