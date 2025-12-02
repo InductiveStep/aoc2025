@@ -1,0 +1,110 @@
+---
+title: "Day 1: Secret Entrance"
+author: AndiF
+date: 2 Dec 2025
+output: 
+  html_notebook: 
+    code_folding: none
+---
+
+```{r message=FALSE, warning=FALSE}
+library(tidyverse)
+library(tictoc)
+```
+
+
+Read in the data, avoiding regexes this time:
+
+```{r}
+mat <- read.table("aoc02.txt", header = FALSE, sep = ",") |> t()
+dat <- str_split_fixed(mat[,1], "-", 2) |> as.data.frame() |>
+  mutate(across(everything(), as.numeric)) |>
+  rename(x = V1, y = V2)
+dat
+```
+
+
+Helper:
+
+```{r}
+digs2charvec <- function(digs) {
+  strsplit(as.character(digs), "")[[1]]
+}
+digs2charvec(012)
+```
+
+Check if digits are dodgy:
+
+```{r}
+dodgy_digs <- function(digs) {
+  vec <- digs2charvec(digs)
+  res <- FALSE # innocent until proven dodgy
+  n <- length(vec)
+  
+  # has to be even length to be dodgy
+  if (n %% 2 == 0) {
+    left <- vec[1:(n / 2)]
+    right <- vec[((n / 2) + 1):n]
+    
+    if (all(left == right))
+      res <- TRUE
+  }
+  
+  res
+}
+```
+
+
+Test it:
+
+```{r}
+dodgy_digs(123123)
+dodgy_digs(12312)
+dodgy_digs(123124)
+dodgy_digs(0101)
+dodgy_digs(1010)
+```
+
+
+Get all dodgy digits in a range:
+
+```{r}
+get_dodgy_digs <- function(x, y) {
+  digs_vec <- x:y
+  dodgy <- map_lgl(digs_vec, dodgy_digs) 
+  digs_vec[dodgy]
+}
+
+get_dodgy_digs(1010, 1012)
+```
+
+Sum all dodgy digits in a range:
+
+```{r}
+sum_dodgy_digs <- function(x, y) {
+  get_dodgy_digs(x, y) |> sum()
+}
+```
+
+
+
+
+## Part 1
+
+Apply to the problem:
+
+```{r}
+tic()
+dat <- dat |>
+  mutate(dodgy_sum = map2_dbl(x, y, sum_dodgy_digs))
+toc()
+```
+
+```{r}
+dat$dodgy_sum |> sum()
+```
+
+
+## Part 2
+
+Off-the-'elf algorithm or roll own...? TBC later when I have time again.
