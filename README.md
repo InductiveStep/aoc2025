@@ -2,7 +2,7 @@
 
 [The puzzles](https://adventofcode.com/2025/)
 
-Solutions:
+Solutions (no to AI, yes to Googling regex syntax):
 
 [Day 1](https://inductivestep.github.io/aoc2025/aoc01.nb.html)
 
