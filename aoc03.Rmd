@@ -111,6 +111,63 @@ Also brute force isn't going to work:
 choose(100, 12)
 ```
 
-To be continued this eve!
+
+Recursion time:
+
+```{r}
+find_max_seq <- function(xs, k) {
+  stopifnot(k >= 1)
+  res <- NA
+  end_search <- length(xs) - (k - 1)
+  
+  #cat("xs: ")
+  #print(xs)
+  #cat("k: ")
+  #print(k)
+  #cat("end_search: ")
+  #print(end_search)
+  
+  search_xs <- xs[1:end_search]
+  #cat("search_xs: ")
+  #print(search_xs)
+  
+  if (k == 1) {
+    res <- max(search_xs)
+  }
+  else {
+    max_pos <- which.max(search_xs)[1]
+    the_max <- search_xs[max_pos]
+    next_search_xs <- xs[(max_pos + 1):length(xs)]
+    res <- c(the_max, find_max_seq(next_search_xs, k - 1))
+  }
+  
+  res
+}
+```
+
+
+```{r}
+find_max_seq_chr <- function(xs, k) {
+  find_max_seq(xs, k) |> paste(collapse = "")
+}
+
+find_max_seq_chr(test_xs, 2)
+```
+
+
+```{r}
+tic()
+res2 <- map_chr(dat, \(xs) find_max_seq_chr(xs, 12)) |> as.bigz()
+toc()
+```
+
+```{r}
+res2
+```
+
+```{r}
+sum(res2)
+```
+
 
 
