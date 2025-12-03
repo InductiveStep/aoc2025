@@ -5,7 +5,7 @@
 Solutions (no to AI, yes to Googling regex syntax):
 
 [Day 1](https://inductivestep.github.io/aoc2025/aoc01.nb.html) &ndash; powered by
-modulo arithmetic, a 621,136 row dataframe, and for loops (no shame)
+modulo arithmetic, a 621,136 row dataframe, and for loops (no shame).
 
 [Day 2](https://inductivestep.github.io/aoc2025/aoc02.nb.html) &ndash; part 2 was
 harder than it looked until I reread the question. Lesson learned, one day...
