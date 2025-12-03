@@ -92,7 +92,7 @@ Correct.
 ## Part 2
 
 
-Time to move to {gmp}
+Time to move to {gmp}.
 
 ```{r}
 987654321111 + 811111111119 + 434234234278 + 888911112111
@@ -119,18 +119,8 @@ find_max_seq <- function(xs, k) {
   stopifnot(k >= 1)
   res <- NA
   end_search <- length(xs) - (k - 1)
-  
-  #cat("xs: ")
-  #print(xs)
-  #cat("k: ")
-  #print(k)
-  #cat("end_search: ")
-  #print(end_search)
-  
   search_xs <- xs[1:end_search]
-  #cat("search_xs: ")
-  #print(search_xs)
-  
+
   if (k == 1) {
     res <- max(search_xs)
   }
