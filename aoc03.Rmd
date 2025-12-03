@@ -1,0 +1,116 @@
+---
+title: "Day 3: Lobby"
+author: AndiF
+date: 2 Dec 2025
+output: 
+  html_notebook: 
+    code_folding: none
+---
+
+```{r message=FALSE, warning=FALSE}
+library(tidyverse)
+library(tictoc)
+library(gmp)
+```
+
+
+Trying *read_lines* for a change:
+
+```{r}
+dat <- read_lines("aoc03.txt") |> strsplit("") |> map(as.numeric) 
+dat[1:3]
+```
+
+
+Is this bruteforcible...?
+
+```{r}
+length(dat)
+```
+
+```{r}
+length(dat[[1]])
+```
+
+```{r}
+choose(100, 2)
+```
+
+```{r}
+choose(100, 2) * 200
+```
+
+Sure.
+
+
+Check I remember how *combn* works...
+
+```{r}
+combn(c("z", "b", "w"), 2, print)
+```
+
+Hurrah -- it returns the elements in the order I want.
+
+
+Try it with an example or two:
+
+```{r}
+test_xs <- dat[[3]]
+test_xs
+```
+
+
+```{r}
+combn(test_xs, 2, \(ys) ys[1] * 10 + ys[2]) |> max()
+```
+
+
+## Part 1
+
+Let's just do it.
+
+
+```{r}
+arrange_row <- function(xs)
+  combn(xs, 2, \(ys) ys[1] * 10 + ys[2]) |> max()
+```
+
+
+```{r}
+tic()
+res <- map_dbl(dat, arrange_row)
+toc()
+```
+
+```{r}
+sum(res)
+```
+
+Correct.
+
+
+## Part 2
+
+
+Time to move to {gmp}
+
+```{r}
+987654321111 + 811111111119 + 434234234278 + 888911112111
+```
+
+
+```{r}
+c("987654321111", "811111111119", "434234234278", "888911112111") |>
+  as.bigz() |>
+  sum()
+```
+
+Also brute force isn't going to work:
+
+```{r}
+choose(100, 12)
+```
+
+To be continued this eve!
+
+
