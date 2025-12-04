@@ -1,0 +1,155 @@
+---
+title: "Day 4: Printing Department"
+author: AndiF
+date: 2 Dec 2025
+output: 
+  html_notebook: 
+    code_folding: none
+---
+
+```{r message=FALSE, warning=FALSE}
+library(tidyverse)
+library(tictoc)
+```
+
+
+Trying *read_lines* again:
+
+```{r}
+list_dat <- read_lines("aoc04.txt") |> strsplit("")
+list_dat[1:2]
+```
+
+Glue to a matrix:
+
+```{r}
+mat <- unlist(list_dat) |> matrix(ncol = list_dat[[1]] |> length(), byrow = TRUE)
+dim(mat)
+```
+
+```{r}
+mat[1:6, 1:6]
+```
+
+I've seen this genre of problem before, and have never been satisfied with my way of getting each cell's neighbours. Another go.
+
+```{r}
+offsets <- expand.grid(x_d = -1:1, y_d = -1:1) |>
+  filter(!(x_d == 0 & y_d == 0))
+offsets
+```
+
+I want a function that gives me all the neighbours and deals with the edges, without me having to worry about falling off the edge.
+
+```{r}
+neighbours <- function(mat, x, y) {
+  pos_mat <- offsets |>
+    mutate(x = x + x_d, y = y + y_d) |>
+    filter(x >= 1 & y >= 1 & x <= nrow(mat) & y <= ncol(mat)) |>
+    select(-c(x_d, y_d))
+  mat[pos_mat |> as.matrix()]
+}
+```
+
+
+```{r}
+mat |> neighbours(2, 2)
+mat |> neighbours(1, 1)
+```
+
+```{r}
+(mat |> neighbours(1, 1)) == "@"
+```
+
+```{r}
+fewer_than_4 <- function(mat, x, y) {
+  the_neighbours <- mat |> neighbours(x, y)
+  count_em <- (the_neighbours == "@") |> sum()
+  count_em < 4
+}
+```
+
+
+```{r}
+fewer_than_4(mat, 1, 1)
+fewer_than_4(mat, 2, 2)
+```
+
+
+# Part 1
+
+```{r}
+res <- matrix(FALSE, nrow = nrow(mat), ncol = ncol(mat))
+tic()
+for (x in 1:nrow(mat))
+  for (y in 1:ncol(mat))
+    if (mat[x, y] == "@")
+      res[x, y] <- mat |> fewer_than_4(x, y)
+toc()
+```
+
+That's very slow.
+
+```{r}
+sum(res)
+```
+
+But correct.
+
+
+# Part 2
+
+Don't think this will be too bad (a few minutes rather than days) if I just loop wildly across the whole matrix. This will, however, waste time checking parts of the matrix that are already done. But I don't have time to think :)
+
+Make everything binary to make it easier to use rithmetic to remove rolls.
+
+
+```{r}
+fewer_than_4_bin <- function(mat, x, y) {
+  the_neighbours <- mat |> neighbours(x, y)
+  count_em <- (the_neighbours == 1) |> sum()
+  count_em < 4
+}
+```
+
+```{r}
+done <- FALSE
+current_status <- (mat == "@") * 1
+start_sum <- sum(current_status)
+```
+
+
+```{r}
+tic()
+while (!done) {
+  to_remove <- matrix(0, nrow = nrow(current_status), ncol = ncol(current_status))
+  for (x in 1:nrow(current_status))
+    for (y in 1:ncol(current_status))
+      if (current_status[x, y] == 1)
+        to_remove[x, y] <- current_status |> fewer_than_4_bin(x, y)
+  
+  sum_remove <- sum(to_remove)
+  
+  if (sum_remove == 0)
+    done <- TRUE
+  else {
+    current_status <- -1 * to_remove + current_status
+    cat("Removed ")
+    cat(sum_remove)
+    cat("\n")
+  }
+}
+toc()
+```
+
+11 minutes :'-)
+
+
+```{r}
+start_sum - sum(current_status)
+```
+
+Correct, though.
+
+
+
