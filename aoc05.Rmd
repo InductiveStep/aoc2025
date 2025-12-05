@@ -1,0 +1,115 @@
+---
+title: "Day 5: Cafeteria"
+author: AndiF
+date: 5 Dec 2025
+output: 
+  html_notebook: 
+    code_folding: none
+---
+
+```{r message=FALSE, warning=FALSE}
+library(tidyverse)
+library(tictoc)
+library(gmp)
+```
+
+
+```{r}
+raw_dat <- read_lines("aoc05.txt")
+sep_line <- which(raw_dat == "")
+```
+
+
+```{r}
+fresh <- raw_dat[1:(sep_line - 1)] |>
+  str_split("-") |>
+  map(as.bigz)
+fresh_mat <- do.call(rbind, fresh)
+head(fresh_mat)
+```
+
+I wanted to make this a data frame and do something lazy with tidyverse, but *bigz* seems to be confusing it, hence this:
+
+```{r}
+order_em  <- fresh_mat[,1] |> order()
+fresh_mat <- fresh_mat[order_em,]
+head(fresh_mat)
+```
+
+```{r}
+ingreds <- raw_dat[(sep_line + 1):length(raw_dat)] |>
+  as.bigz() |>
+  sort()
+head(ingreds)
+```
+
+
+# Part 1
+
+
+```{r}
+small_mat <- function(mat, lower) {
+  keep_r <- mat[,1] <= lower
+  mat[keep_r,] 
+}
+```
+
+```{r}
+i_n <- length(ingreds)
+is_fresh <- rep(FALSE, i_n)
+
+tic()
+for (i_pos in 1:i_n) {
+  cur_ingred <- ingreds[i_pos]
+  search_mat <- small_mat(fresh_mat, cur_ingred)
+  if (nrow(search_mat) >= 1)
+    is_fresh[i_pos] <- any(cur_ingred <= search_mat[,2])
+}
+toc()
+```
+
+```{r}
+sum(is_fresh)
+```
+
+# Part 2
+
+
+```{r}
+merged_mat <- fresh_mat
+cur_r <- 1
+
+tic()
+while (cur_r <= nrow(merged_mat)) {
+  lower <- merged_mat[cur_r, 1]
+  upper <- merged_mat[cur_r, 2]
+  mergable <- (upper + 1) >= as.vector(merged_mat[,1])
+  if (cur_r > 1)
+    mergable[1:(cur_r - 1)] <- FALSE
+  mergable[cur_r] <- FALSE 
+  
+  if (sum(mergable >= 1)) {
+    new_upper <- max(c(upper, merged_mat[mergable,2]))
+    merged_mat[cur_r, 2] <- new_upper
+    
+    delete_em <- (1:nrow(merged_mat))[mergable]
+    
+    merged_mat <- merged_mat[-delete_em,]
+  } else {
+    cur_r <- cur_r + 1
+  }
+}
+toc()
+```
+
+
+```{r}
+nrow(fresh_mat)
+nrow(merged_mat)
+```
+
+
+```{r}
+diffs <- merged_mat[,2] - merged_mat[,1] + 1
+sum(diffs)
+```
