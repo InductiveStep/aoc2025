@@ -17,4 +17,4 @@ debug prints. Powered by recursion and {gmp} for big integers.
 [Day 4](https://inductivestep.github.io/aoc2025/aoc04.nb.html) &ndash; slow (11
 min on part 2) but correct :)
 
-[Day 5](https://inductivestep.github.io/aoc2025/aoc04.nb.html) &ndash; done.
+[Day 5](https://inductivestep.github.io/aoc2025/aoc05.nb.html) &ndash; done.
