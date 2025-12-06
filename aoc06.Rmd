@@ -82,7 +82,8 @@ mat[,3740:3753]
 ```
 
 
-To parse the numbers I'm going to take advantage of *as.numeric* parsing numbers while ignoring white space, and also returning NA if there's no number in the string (that's the blank column). Since the op comes last when reading right to left, we can use that to trigger the sum.
+To parse the numbers, I'll use *as.numeric*, which ignores whitespace either side of a number and returns NA when no number is present (that's the blank column, which we just skip over). Since the operator appears last when reading right to left, we can use its presence to trigger the sum.
+
 
 ```{r}
 tic()
