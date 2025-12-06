@@ -1,0 +1,114 @@
+---
+title: "Day 6: Trash Compactor"
+author: AndiF
+date: 6 Dec 2025
+output: 
+  html_notebook: 
+    code_folding: none
+---
+
+```{r message=FALSE, warning=FALSE}
+library(tidyverse)
+library(tictoc)
+options(scipen = 999)
+```
+
+Read in the data:
+
+```{r}
+dat <- read.table("aoc06.txt")
+dat
+```
+
+Make it prettier:
+
+```{r}
+nums <- dat[-nrow(dat),] |>
+  mutate(across(everything(), as.numeric)) |> t() |>
+  as.tibble() |>
+  mutate(op = dat[nrow(dat),] |> as.character())
+names(nums) <- c(paste0("x", 1:4, sep = ""), "op")
+nums
+```
+
+
+
+
+## Part 1
+
+```{r}
+nums <- nums |>
+  rowwise() |>
+  mutate(str = paste(x1, x2, x3, x4, sep = op)) |>
+  mutate(ans = map_dbl(str, \(s) parse(text = s) |> eval() ) |> sum())
+nums
+```
+
+
+```{r}
+sum(nums$ans)
+```
+
+
+
+## Part 2
+
+Slightly irritating coding with positions. Read in the data again and take a look at the first 81 columns:
+
+```{r}
+rawd <- read_lines("aoc06.txt")
+rawd |> map_chr(\(x) substr(x, 1, 81))
+```
+
+Check that the widths are the same:
+
+```{r}
+rawd |> map_dbl(str_length)
+```
+
+Make a nice big matrix:
+
+```{r}
+mat <- rawd |> str_split("") |>
+  unlist() |>
+  matrix(ncol = str_length(rawd[1]), byrow = TRUE)
+dim(mat)
+```
+
+Peek at the right hand size:
+
+```{r}
+mat[,3740:3753]
+```
+
+
+To parse the numbers I'm going to take advantage of *as.numeric* parsing numbers while ignoring white space, and also returning NA if there's no number in the string (that's the blank column). Since the op comes last when reading right to left, we can use that to trigger the sum.
+
+```{r}
+tic()
+ns <- c()    # Numbers in one of the puzzles
+sums <- c()  # Accumulate answers across puzzles
+for (col in ncol(mat):1) {
+  cur_num <- paste0(mat[1:4, col], collapse = "") |> as.numeric()
+  
+  if (!is.na(cur_num)) { # skip over blank columns
+    ns <- c(ns, cur_num)
+    
+    op <- mat[5, col]
+    if (op != " ") {
+      str  <- paste(ns, collapse = op)
+      sums <- c(sums, parse(text = str) |> eval())
+      ns <- c()
+    }
+  }
+}
+toc()
+```
+
+
+```{r}
+sums |> sum()
+```
+
+
+

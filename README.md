@@ -18,3 +18,5 @@ debug prints. Powered by recursion and {gmp} for big integers.
 min on part 2) but correct :)
 
 [Day 5](https://inductivestep.github.io/aoc2025/aoc05.nb.html) &ndash; done.
+
+[Day 6](https://inductivestep.github.io/aoc2025/aoc06.nb.html) &ndash; done.
