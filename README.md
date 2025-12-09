@@ -20,3 +20,6 @@ min on part 2) but correct :)
 [Day 5](https://inductivestep.github.io/aoc2025/aoc05.nb.html) &ndash; done.
 
 [Day 6](https://inductivestep.github.io/aoc2025/aoc06.nb.html) &ndash; done.
+
+[Day 7](https://inductivestep.github.io/aoc2025/aoc07.nb.html) &ndash; part 1 done,
+part 2 needs time.

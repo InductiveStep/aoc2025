@@ -1,0 +1,126 @@
+---
+title: "Day 7: Laboratories"
+author: AndiF
+date: 7 Dec 2025
+output: 
+  html_notebook: 
+    code_folding: none
+---
+
+```{r message=FALSE, warning=FALSE}
+library(tidyverse)
+library(tictoc)
+library(beepr)
+options(scipen = 999)
+```
+
+Read in the data:
+
+```{r}
+input_filename <- "aoc07.txt"
+dat <- read_lines(input_filename)
+length(dat)
+```
+
+```{r}
+lens <- dat |> map_dbl(str_length)
+lens
+```
+
+
+```{r}
+mat <- read_fwf(input_filename, col_positions = fwf_widths(rep(1, lens[1]))) |>
+  as.matrix()
+colnames(mat) <- 1:ncol(mat)
+rownames(mat) <- 1:nrow(mat)
+dim(mat)
+```
+
+```{r}
+mat |> table()
+```
+
+```{r}
+S_col <- which(mat[1,] == "S") |> as.vector()
+S_col
+```
+
+```{r}
+set_at <- function(r, c, val) {
+  if (r >= 1 && r <= nrow(mat) && c >= 1 && c <= ncol(mat)) {
+     if (mat[r, c] == ".") {
+       mat[r, c] <<- val
+     } else {
+       if (mat[r, c] != val)
+         warning(paste("Tried to write", val, "at", r, c, "- it has a", mat[r, c]))
+     }
+  } else {
+    warning(paste("Tried to write out of bounds at", r, c))
+  }
+}
+```
+
+
+
+## Part 1
+
+Get it going:
+
+```{r}
+set_at(2, S_col, "|")
+start_mat <- mat # save the original mat for later
+```
+
+
+Do the work:
+
+```{r}
+tic()
+splits <- 0
+for (r in 3:nrow(mat))
+  for (c in 1:ncol(mat)) {
+    if (mat[r - 1, c] == "|") {
+      if (mat[r, c] == ".") {
+        set_at(r, c, "|")
+      }
+      else if (mat[r, c] == "^") {
+        set_at(r, c - 1, "|")
+        set_at(r, c + 1, "|")
+        splits <- splits + 1
+      }
+    }
+  }
+toc()
+```
+
+
+```{r}
+splits
+```
+
+
+## Part 2
+
+This works for the example problem but falls over on the large one:
+
+```{r}
+count_splits <- function(mat, c) {
+  res <- 1
+
+  if (nrow(mat) >= 2) {
+    newmat <- mat[-1, , drop = FALSE]
+  
+    if (mat[1, c] == ".") {
+      res <- count_splits(newmat, c)
+    } else {
+      res <- count_splits(newmat, c - 1) +
+             count_splits(newmat, c + 1)
+    }
+  }
+  
+  res
+}
+```
+
+
+TBC. I have a DAG idea when I get the time.
