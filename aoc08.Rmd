@@ -1,0 +1,91 @@
+---
+title: "Day 8: Playground"
+author: AndiF
+date: 10 Dec 2025
+output: 
+  html_notebook: 
+    code_folding: none
+---
+
+```{r message=FALSE, warning=FALSE}
+library(tidyverse)
+library(tictoc)
+library(beepr)
+library(igraph)
+options(scipen = 999)
+```
+
+
+```{r}
+coords <- read.csv("aoc08.txt", header = FALSE)
+names(coords) <- c("x", "y", "z")
+head(coords)
+```
+
+
+```{r}
+pair_dat <- combn(nrow(coords), 2) |> t() |> as.data.frame()
+names(pair_dat) <- c("i", "j")
+dim(pair_dat)
+```
+
+```{r}
+head(pair_dat)
+```
+
+
+```{r}
+euc <- function(dat, i, j) {
+  x <- dat[i,] |> as.vector()
+  y <- dat[j,] |> as.vector()
+  rbind(x, y) |> dist() |> as.vector()
+}
+```
+
+
+
+```{r}
+euc(coords, 1, 2)
+```
+
+```{r}
+tic()
+pair_dat$dist <- mapply(\(x,y) euc(coords, x, y), pair_dat$i, pair_dat$j)
+toc()
+beep(2)
+```
+
+```{r}
+sorted_pairs <- pair_dat |>
+  arrange(dist)
+sorted_pairs
+```
+
+
+```{r}
+edge_mat <- sorted_pairs[,c("i", "j")] |> head(1000) |> as.matrix()
+```
+
+
+```{r}
+the_graph <- graph_from_edgelist(edge_mat, directed = FALSE)
+the_graph
+```
+
+```{r}
+comps <- the_graph |> components(mode = "weak")
+```
+
+
+```{r}
+sort(comps$csize) |> rev() |> head(3) |> prod()
+```
+
+## Part 2
+
+TBC.
+
+
+
+
+

@@ -1,7 +1,7 @@
 ---
 title: "Day 7: Laboratories"
 author: AndiF
-date: 7 Dec 2025
+date: 9 Dec 2025
 output: 
   html_notebook: 
     code_folding: none
@@ -11,6 +11,7 @@ output:
 library(tidyverse)
 library(tictoc)
 library(beepr)
+library(igraph)
 options(scipen = 999)
 ```
 
@@ -101,26 +102,4 @@ splits
 
 ## Part 2
 
-This works for the example problem but falls over on the large one:
-
-```{r}
-count_splits <- function(mat, c) {
-  res <- 1
-
-  if (nrow(mat) >= 2) {
-    newmat <- mat[-1, , drop = FALSE]
-  
-    if (mat[1, c] == ".") {
-      res <- count_splits(newmat, c)
-    } else {
-      res <- count_splits(newmat, c - 1) +
-             count_splits(newmat, c + 1)
-    }
-  }
-  
-  res
-}
-```
-
-
-TBC. I have a DAG idea when I get the time.
+TBC.
