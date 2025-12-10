@@ -64,28 +64,48 @@ sorted_pairs
 
 ```{r}
 edge_mat <- sorted_pairs[,c("i", "j")] |> head(1000) |> as.matrix()
-```
-
-
-```{r}
 the_graph <- graph_from_edgelist(edge_mat, directed = FALSE)
-the_graph
 ```
 
 ```{r}
 comps <- the_graph |> components(mode = "weak")
-```
-
-
-```{r}
 sort(comps$csize) |> rev() |> head(3) |> prod()
 ```
 
 ## Part 2
 
-TBC.
+```{r}
+big_mat <- sorted_pairs[,c("i", "j")] |> as.matrix()
+head(big_mat)
+```
 
 
+```{r}
+tic()
+growing_g <- make_empty_graph(n = 1000, directed = FALSE)
+done <- FALSE
+i <- 1
 
+while (!done) {
+  growing_g <- growing_g |> add_edges(big_mat[i,])
+  comps <- growing_g |> components(mode = "weak")
+  
+  if (comps$no == 1)
+    done <- TRUE
+  else
+    i <- i + 1
+}
+toc()
+```
+
+```{r}
+last_two <- big_mat[i,] |> as.vector()
+last_two
+```
+
+
+```{r}
+coords[last_two,] |> pull(x) |> prod()
+```
 
 

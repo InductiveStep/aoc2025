@@ -23,5 +23,5 @@ min on part 2) but correct :)
 
 [Day 7](https://inductivestep.github.io/aoc2025/aoc07.nb.html) &ndash; part 1 done.
 
-[Day 8](https://inductivestep.github.io/aoc2025/aoc08.nb.html) &ndash; excuse to use
-{igraph}; part 1 done.
+[Day 8](https://inductivestep.github.io/aoc2025/aoc08.nb.html) &ndash; done,
+using the wonderful {igraph} package.
