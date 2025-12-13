@@ -1,0 +1,66 @@
+---
+title: "Day 9: Movie Theater"
+author: AndiF
+date: 13 Dec 2025
+output: 
+  html_notebook: 
+    code_folding: none
+---
+
+```{r message=FALSE, warning=FALSE}
+library(tidyverse)
+library(tictoc)
+library(beepr)
+options(scipen = 999)
+```
+
+
+```{r}
+coords <- read.csv("aoc09.txt", header = FALSE)
+names(coords) <- c("x", "y")
+head(coords)
+```
+
+
+# Part 1
+
+Easy start.
+
+
+```{r}
+pair_dat <- combn(nrow(coords), 2) |> t() |> as.data.frame()
+names(pair_dat) <- c("i", "j")
+dim(pair_dat)
+```
+
+```{r}
+head(pair_dat)
+```
+
+
+```{r}
+area <- function(dat, i, j) {
+  p1 <- dat[i,]
+  p2 <- dat[j,]
+  
+  (abs(p1$x - p2$x) + 1) * (abs(p1$y - p2$y) + 1)
+}
+```
+
+
+```{r}
+tic()
+pair_dat$area <- map2_dbl(pair_dat$i, pair_dat$j, \(i, j) area(coords, i, j))
+toc()
+```
+
+```{r}
+pair_dat |>
+  slice_max(area, n = 5)
+```
+
+## Part 2
+
+TBC.
+
+

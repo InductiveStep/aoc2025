@@ -25,3 +25,5 @@ min on part 2) but correct :)
 
 [Day 8](https://inductivestep.github.io/aoc2025/aoc08.nb.html) &ndash; done,
 using the wonderful {igraph} package.
+
+[Day 9](https://inductivestep.github.io/aoc2025/aoc09.nb.html) &ndash; part 1 done.
